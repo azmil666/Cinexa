@@ -8,26 +8,35 @@ function App() {
   const [state, setState] = useState({
     s: "",
     results: [],
-    selected: {}
+    selected: {},
+    hasSearched: false
     
   });
   const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
   const BASE_URL = "https://www.omdbapi.com/";
 
   const search = (e) => {
-    if (e.key === "Enter") {
-       axios(`${BASE_URL}?apikey=${API_KEY}&s=${state.s}`).then(({ data }) => {
-        let results = data.Search;
-        setState(prevState => {
-          return { ...prevState, results: results }
+  if (e.key === "Enter") {
+    axios(`${BASE_URL}?apikey=${API_KEY}&s=${state.s}`)
+      .then(({ data }) => {
 
+        if (data.Response === "True") {
+          setState(prevState => ({
+            ...prevState,
+            results: data.Search,
+            hasSearched: true
+          }));
+        } else {
+          setState(prevState => ({
+            ...prevState,
+            results: [],
+            hasSearched: true
+          }));
+        }
 
-        })
-
-       });
-    }
-     
+      });
   }
+};
   const handleInput = (e) => {
     let s = e.target.value;
     setState(prevState => {
@@ -61,7 +70,7 @@ function App() {
 
       <main>
         <Search handleInput={handleInput} search={search} />
-        <Results results={state.results} openPopup={openPopup}/>
+        <Results results={state.results} openPopup={openPopup} searchTerm={state.s} hasSearched={state.hasSearched}/>
         
         {(typeof state.selected.Title != "undefined" ) ? <Popup selected={state.selected} closePopup={closePopup} /> : false}
       </main>
