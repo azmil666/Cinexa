@@ -4,6 +4,11 @@ import axios from 'axios';
 import Results from "./components/Results";
 import Popup from "./components/Popup";
 
+const TOP_MOVIES = [
+  "tt0111161", "tt0068646", "tt0071562", "tt0468569",
+  "tt0050083", "tt0108052", "tt0167260", "tt0110912",
+  "tt0060196", "tt0137523", "tt0120737", "tt0109830"
+];
 function App() {
   const [state, setState] = useState({
     s: "",
@@ -12,20 +17,7 @@ function App() {
     hasSearched: false
     
   });
-  const TOP_MOVIES = [
-  "tt0111161", 
-  "tt0068646", 
-  "tt0071562", 
-  "tt0468569", 
-  "tt0050083",
-  "tt0108052", 
-  "tt0167260", 
-  "tt0110912", 
-  "tt0060196", 
-  "tt0137523" ,
-  "tt0120737",
-  "tt0109830" 
-];
+  
   const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
   const BASE_URL = "https://www.omdbapi.com/";
 
@@ -82,7 +74,6 @@ function App() {
       );
 
       const responses = await Promise.all(requests);
-
       const movies = responses.map(res => res.data);
 
       setState(prevState => ({
@@ -96,8 +87,7 @@ function App() {
   };
 
   fetchTopMovies();
-}, []);
-
+}, [API_KEY, BASE_URL]);
   
   return (
     <div className="App">
